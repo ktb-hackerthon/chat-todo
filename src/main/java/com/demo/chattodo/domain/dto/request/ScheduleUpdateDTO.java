@@ -10,7 +10,7 @@ import java.time.LocalTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ScheduleCreateDTO {
+public class ScheduleUpdateDTO {
 
     String title;
 
@@ -27,5 +27,4 @@ public class ScheduleCreateDTO {
     LocalTime endTime;
 
     String place;
-
 }
