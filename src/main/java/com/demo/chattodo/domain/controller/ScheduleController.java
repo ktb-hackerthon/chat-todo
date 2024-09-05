@@ -4,6 +4,7 @@ package com.demo.chattodo.domain.controller;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.demo.chattodo.domain.dto.request.ScheduleUpdateDTO;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -56,5 +57,15 @@ public class ScheduleController {
 		}
 
 		return ResponseEntity.badRequest().build();
+	}
+
+	@PutMapping("/{scheduleId}")
+	public ResponseEntity<?> updateSchedule(
+			@RequestHeader("member_id") String memberId,
+			@PathVariable Long scheduleId,
+			@RequestBody ScheduleUpdateDTO dto) {
+
+		scheduleService.updateSchedule(memberId, scheduleId, dto);
+		return ResponseEntity.ok().build();
 	}
 }

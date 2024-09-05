@@ -29,4 +29,11 @@ public class Schedule {
 		this.endDateTime = endDateTime;
 		this.place = place;
 	}
+
+	public void update(String title, LocalDateTime startDateTime, LocalDateTime endDateTime, String place) {
+		this.title = title;
+		this.startDateTime = startDateTime;
+		this.endDateTime = endDateTime;
+		this.place = place;
+	}
 }

@@ -10,6 +10,7 @@ import java.util.Optional;
 
 
 import com.demo.chattodo.domain.dto.request.ScheduleCreateDTO;
+import com.demo.chattodo.domain.dto.request.ScheduleUpdateDTO;
 import com.demo.chattodo.domain.entity.Schedule;
 import com.demo.chattodo.domain.utils.DateTimeUtil;
 
@@ -84,5 +85,14 @@ public class ScheduleService {
 		}
 
 		return false;
+	}
+
+	@Transactional
+	public void updateSchedule(String memberId, Long scheduleId, ScheduleUpdateDTO dto) {
+		scheduleRepository.findByIdAndMemberId(scheduleId, memberId)
+				.ifPresent(schedule -> schedule.update(dto.getTitle(),
+                        DateTimeUtil.getStartLocalDateTime(dto.getStartDate(), dto.getStartTime()),
+                        DateTimeUtil.getEndLocalDateTime(dto.getEndDate(), dto.getEndTime()),
+                        dto.getPlace()));
 	}
 }
