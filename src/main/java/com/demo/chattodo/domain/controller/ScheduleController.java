@@ -23,7 +23,6 @@ import com.demo.chattodo.domain.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
 
 @Slf4j
-@RequestMapping("/schedules")
 @RestController
 @RequestMapping("/schedules")
 @RequiredArgsConstructor
@@ -35,6 +34,7 @@ public class ScheduleController {
 	public List<ScheduleCountResponseDTO> countScheduleOfEachDay(@RequestHeader("member_id")String memberId, @RequestParam("start_date") LocalDate startDate, @RequestParam("end_date")LocalDate endDate) {
 
 		return scheduleService.countScheduleOfEachDay(memberId, startDate, endDate);
+	}
 
 	@PostMapping
 	public ResponseEntity<?> createSchedule(

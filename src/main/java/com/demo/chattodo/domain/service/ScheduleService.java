@@ -13,20 +13,18 @@ import com.demo.chattodo.domain.entity.Schedule;
 import com.demo.chattodo.domain.utils.DateTimeUtil;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.demo.chattodo.domain.dto.response.ScheduleCountResponseDTO;
-import com.demo.chattodo.domain.entity.Schedule;
 import com.demo.chattodo.domain.repository.ScheduleRepository;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.transaction.annotation.Transactional;
+
 
 
 @Service
-@Transactional
-@RequiredArgsConstructor
 @Transactional(readOnly = true)
+@RequiredArgsConstructor
 public class ScheduleService {
 	private final ScheduleRepository scheduleRepository;
 
@@ -56,6 +54,8 @@ public class ScheduleService {
 		}
 
 		return response;
+
+	}
 
 	@Transactional
 	public Long saveSchedule(String memberId, ScheduleCreateDTO dto) {
