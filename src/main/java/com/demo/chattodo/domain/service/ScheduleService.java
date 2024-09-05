@@ -6,10 +6,12 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 import com.demo.chattodo.domain.dto.request.ScheduleCreateDTO;
 import com.demo.chattodo.domain.dto.response.ScheduleInfoResponseDTO;
+import com.demo.chattodo.domain.dto.request.ScheduleUpdateDTO;
 import com.demo.chattodo.domain.entity.Schedule;
 import com.demo.chattodo.domain.utils.DateTimeUtil;
 
@@ -72,6 +74,27 @@ public class ScheduleService {
 		scheduleRepository.save(schedule);
 
 		return schedule.getId();
+	}
+
+	@Transactional
+	public boolean deleteSchedule(String memberId, Long scheduleId) {
+		Optional<Schedule> schedule = scheduleRepository.findByIdAndMemberId(scheduleId, memberId);
+
+		if (schedule.isPresent()) {
+			scheduleRepository.delete(schedule.get());
+			return true;
+		}
+
+		return false;
+	}
+
+	@Transactional
+	public void updateSchedule(String memberId, Long scheduleId, ScheduleUpdateDTO dto) {
+		scheduleRepository.findByIdAndMemberId(scheduleId, memberId)
+				.ifPresent(schedule -> schedule.update(dto.getTitle(),
+                        DateTimeUtil.getStartLocalDateTime(dto.getStartDate(), dto.getStartTime()),
+                        DateTimeUtil.getEndLocalDateTime(dto.getEndDate(), dto.getEndTime()),
+                        dto.getPlace()));
 	}
 
 	public List<ScheduleInfoResponseDTO> searchAllByConditions(String memberId, LocalDate startDate, LocalDate endDate, String title, String place) {
