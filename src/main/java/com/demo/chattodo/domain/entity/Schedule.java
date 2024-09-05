@@ -14,9 +14,9 @@ public class Schedule {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	private String userId;
+	private String memberId;
 	private String title;
 	private LocalDateTime startDateTime;
 	private LocalDateTime endDateTime;
-	private String location;
+	private String place;
 }
