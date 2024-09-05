@@ -2,7 +2,6 @@ package com.demo.chattodo.domain.controller;
 
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,7 +30,10 @@ public class ScheduleController {
 
 
 	@GetMapping
-	public List<ScheduleCountResponseDTO> countScheduleOfEachDay(@RequestHeader("member_id")String memberId, @RequestParam("start_date") LocalDate startDate, @RequestParam("end_date")LocalDate endDate) {
+	public List<ScheduleCountResponseDTO> countScheduleOfEachDay(
+			@RequestHeader("member_id")String memberId,
+			@RequestParam("start_date") LocalDate startDate,
+			@RequestParam("end_date")LocalDate endDate) {
 
 		return scheduleService.countScheduleOfEachDay(memberId, startDate, endDate);
 	}
@@ -40,7 +42,19 @@ public class ScheduleController {
 	public ResponseEntity<?> createSchedule(
 			@RequestHeader("member_id") String memberId,
 			@RequestBody ScheduleCreateDTO dto) {
-		return ResponseEntity.ok().body(scheduleService.saveSchedule(memberId, dto));
 
+		return ResponseEntity.ok().body(scheduleService.saveSchedule(memberId, dto));
+	}
+
+	@DeleteMapping("/{scheduleId}")
+	public ResponseEntity<?> deleteSchedule(
+			@RequestHeader("member_id") String memberId,
+			@PathVariable Long scheduleId) {
+
+		if (scheduleService.deleteSchedule(memberId, scheduleId)) {
+			return ResponseEntity.ok().build();
+		}
+
+		return ResponseEntity.badRequest().build();
 	}
 }

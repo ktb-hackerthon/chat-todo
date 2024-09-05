@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 import com.demo.chattodo.domain.dto.request.ScheduleCreateDTO;
@@ -71,5 +72,17 @@ public class ScheduleService {
 		scheduleRepository.save(schedule);
 
 		return schedule.getId();
+	}
+
+	@Transactional
+	public boolean deleteSchedule(String memberId, Long scheduleId) {
+		Optional<Schedule> schedule = scheduleRepository.findByIdAndMemberId(scheduleId, memberId);
+
+		if (schedule.isPresent()) {
+			scheduleRepository.delete(schedule.get());
+			return true;
+		}
+
+		return false;
 	}
 }
