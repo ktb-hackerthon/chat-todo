@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 import com.demo.chattodo.domain.dto.response.ScheduleCountResponseDTO;
+import com.demo.chattodo.domain.dto.response.ScheduleInfoResponseDTO;
 import com.demo.chattodo.domain.service.ScheduleService;
 
 import lombok.RequiredArgsConstructor;
@@ -41,6 +42,15 @@ public class ScheduleController {
 			@RequestHeader("member_id") String memberId,
 			@RequestBody ScheduleCreateDTO dto) {
 		return ResponseEntity.ok().body(scheduleService.saveSchedule(memberId, dto));
+	}
 
+	@GetMapping("/search")
+	public List<ScheduleInfoResponseDTO> searchAllByConditions(
+			@RequestHeader("member_id") String memberId,
+			@RequestParam(value = "start_date", required = false) LocalDate startDateTime,
+			@RequestParam(value = "end_date", required = false) LocalDate endDateTime,
+			@RequestParam(value = "title", required = false) String title,
+			@RequestParam(value = "place", required = false) String place) {
+		return scheduleService.searchAllByConditions(memberId, startDateTime, endDateTime, title, place);
 	}
 }

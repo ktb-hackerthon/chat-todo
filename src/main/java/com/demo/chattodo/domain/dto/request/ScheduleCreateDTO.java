@@ -1,12 +1,15 @@
 package com.demo.chattodo.domain.dto.request;
 
-import com.demo.chattodo.domain.entity.Schedule;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.*;
-
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
@@ -15,20 +18,20 @@ import java.time.LocalTime;
 @ToString
 public class ScheduleCreateDTO {
 
-    String title;
+	String title;
 
-    @JsonProperty("start_date")
-    LocalDate startDate;
+	@JsonProperty("start_date")
+	LocalDate startDate;
 
-    @JsonProperty("start_time")
-    LocalTime startTime;
+	@JsonProperty("start_time")
+	LocalTime startTime;
 
-    @JsonProperty("end_date")
-    LocalDate endDate;
+	@JsonProperty("end_date")
+	LocalDate endDate;
 
-    @JsonProperty("end_time")
-    LocalTime endTime;
+	@JsonProperty("end_time")
+	LocalTime endTime;
 
-    String place;
+	String place;
 
 }

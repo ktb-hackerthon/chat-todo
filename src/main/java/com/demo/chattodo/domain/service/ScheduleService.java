@@ -9,6 +9,7 @@ import java.util.List;
 
 
 import com.demo.chattodo.domain.dto.request.ScheduleCreateDTO;
+import com.demo.chattodo.domain.dto.response.ScheduleInfoResponseDTO;
 import com.demo.chattodo.domain.entity.Schedule;
 import com.demo.chattodo.domain.utils.DateTimeUtil;
 
@@ -72,4 +73,28 @@ public class ScheduleService {
 
 		return schedule.getId();
 	}
+
+	public List<ScheduleInfoResponseDTO> searchAllByConditions(String memberId, LocalDate startDate, LocalDate endDate, String title, String place) {
+		List<Schedule> schedules = scheduleRepository.searchAllByConditions(
+			memberId,
+			startDate,
+			endDate,
+			title,
+			place
+		);
+
+		List<ScheduleInfoResponseDTO> response = new ArrayList<>();
+		for (Schedule schedule : schedules) {
+			response.add(ScheduleInfoResponseDTO.builder()
+				.id(schedule.getId())
+				.title(schedule.getTitle())
+				.startDateTime(schedule.getStartDateTime())
+				.endDateTime(schedule.getEndDateTime())
+				.place(schedule.getPlace())
+				.build());
+		}
+
+		return response;
+	}
+
 }
