@@ -7,9 +7,11 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Data
+@NoArgsConstructor
 public class Schedule {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,4 +21,12 @@ public class Schedule {
 	private LocalDateTime startDateTime;
 	private LocalDateTime endDateTime;
 	private String place;
+
+	public Schedule(String memberId, String title, LocalDateTime startDateTime, LocalDateTime endDateTime, String place) {
+		this.memberId = memberId;
+		this.title = title;
+		this.startDateTime = startDateTime;
+		this.endDateTime = endDateTime;
+		this.place = place;
+	}
 }
