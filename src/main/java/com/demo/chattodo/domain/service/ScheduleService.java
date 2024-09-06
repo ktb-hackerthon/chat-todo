@@ -1,28 +1,24 @@
 package com.demo.chattodo.domain.service;
 
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
-
-
-import com.demo.chattodo.domain.dto.request.ScheduleCreateDTO;
-import com.demo.chattodo.domain.dto.request.ScheduleUpdateDTO;
-import com.demo.chattodo.domain.entity.Schedule;
-import com.demo.chattodo.domain.utils.DateTimeUtil;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.demo.chattodo.domain.dto.request.ScheduleCreateDTO;
+import com.demo.chattodo.domain.dto.request.ScheduleUpdateDTO;
 import com.demo.chattodo.domain.dto.response.ScheduleCountResponseDTO;
+import com.demo.chattodo.domain.entity.Schedule;
 import com.demo.chattodo.domain.repository.ScheduleRepository;
+import com.demo.chattodo.domain.utils.DateTimeUtil;
 
 import lombok.RequiredArgsConstructor;
-
-
 
 @Service
 @Transactional(readOnly = true)
@@ -30,44 +26,43 @@ import lombok.RequiredArgsConstructor;
 public class ScheduleService {
 	private final ScheduleRepository scheduleRepository;
 
-
-	public List<ScheduleCountResponseDTO> countScheduleOfEachDay(String memberId, LocalDate startDate, LocalDate endDate) {
+	public List<ScheduleCountResponseDTO> countScheduleOfEachDay(String memberId, LocalDateTime startDateTime,
+		LocalDateTime endDateTime) {
 		List<Schedule> schedules = scheduleRepository.findAllByDateRangeAndMemberId(
-			LocalDateTime.of(startDate, LocalTime.MIN),
-			LocalDateTime.of(endDate, LocalTime.MIN).plusDays(1),
+			startDateTime,
+			endDateTime,
 			memberId
 		);
 
-		List<ScheduleCountResponseDTO> response = new ArrayList<>();
-		for (LocalDate date = startDate; date.isBefore(endDate.plusDays(1)); date = date.plusDays(1)) {
-			LocalDate finalDate = date;
-			long count = schedules.stream()
-				.filter(schedule -> schedule.getStartDateTime().toLocalDate().equals(finalDate))
-				.count();
+		Map<LocalDate, Long> countMap = new HashMap<>();
+		for (Schedule schedule : schedules) {
+			LocalDate startDate = schedule.getStartDateTime().toLocalDate();
+			LocalDate endDate = schedule.getEndDateTime().toLocalDate();
 
-			if (count == 0) {
-				continue;
+			for (LocalDate date = startDate; date.isBefore(endDate) || date.isEqual(endDate); date = date.plusDays(1)) {
+				countMap.put(date, countMap.getOrDefault(date, 0L) + 1L);
 			}
-
-			response.add(ScheduleCountResponseDTO.builder()
-				.date(date)
-				.count(count)
-				.build());
 		}
 
-		return response;
+		// countMap의 요소를 key값으로 정렬하여 이를 DTO List로 만들어 return
+		List<ScheduleCountResponseDTO> response = new ArrayList<>();
 
+		countMap.entrySet().stream()
+			.sorted(Map.Entry.comparingByKey())
+			.forEach(entry -> response.add(new ScheduleCountResponseDTO(entry.getKey(), entry.getValue())));
+
+		return response;
 	}
 
 	@Transactional
 	public Long saveSchedule(String memberId, ScheduleCreateDTO dto) {
 
 		Schedule schedule = new Schedule(
-				memberId,
-				dto.getTitle(),
-				DateTimeUtil.getStartLocalDateTime(dto.getStartDate(), dto.getStartTime()),
-				DateTimeUtil.getEndLocalDateTime(dto.getEndDate(), dto.getEndTime()),
-				dto.getPlace()
+			memberId,
+			dto.getTitle(),
+			DateTimeUtil.getStartLocalDateTime(dto.getStartDate(), dto.getStartTime()),
+			DateTimeUtil.getEndLocalDateTime(dto.getEndDate(), dto.getEndTime()),
+			dto.getPlace()
 		);
 
 		scheduleRepository.save(schedule);
@@ -90,9 +85,9 @@ public class ScheduleService {
 	@Transactional
 	public void updateSchedule(String memberId, Long scheduleId, ScheduleUpdateDTO dto) {
 		scheduleRepository.findByIdAndMemberId(scheduleId, memberId)
-				.ifPresent(schedule -> schedule.update(dto.getTitle(),
-                        DateTimeUtil.getStartLocalDateTime(dto.getStartDate(), dto.getStartTime()),
-                        DateTimeUtil.getEndLocalDateTime(dto.getEndDate(), dto.getEndTime()),
-                        dto.getPlace()));
+			.ifPresent(schedule -> schedule.update(dto.getTitle(),
+				DateTimeUtil.getStartLocalDateTime(dto.getStartDate(), dto.getStartTime()),
+				DateTimeUtil.getEndLocalDateTime(dto.getEndDate(), dto.getEndTime()),
+				dto.getPlace()));
 	}
 }
