@@ -1,6 +1,5 @@
 package com.demo.chattodo.domain.service;
 
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -8,22 +7,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-
-import com.demo.chattodo.domain.dto.request.ScheduleCreateDTO;
-import com.demo.chattodo.domain.dto.response.ScheduleInfoResponseDTO;
-import com.demo.chattodo.domain.dto.request.ScheduleUpdateDTO;
-import com.demo.chattodo.domain.entity.Schedule;
-import com.demo.chattodo.domain.utils.DateTimeUtil;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.demo.chattodo.domain.dto.request.ScheduleCreateDTO;
+import com.demo.chattodo.domain.dto.request.ScheduleUpdateDTO;
 import com.demo.chattodo.domain.dto.response.ScheduleCountResponseDTO;
+import com.demo.chattodo.domain.dto.response.ScheduleInfoResponseDTO;
+import com.demo.chattodo.domain.entity.Schedule;
 import com.demo.chattodo.domain.repository.ScheduleRepository;
+import com.demo.chattodo.domain.utils.DateTimeUtil;
 
 import lombok.RequiredArgsConstructor;
-
-
 
 @Service
 @Transactional(readOnly = true)
@@ -31,8 +26,8 @@ import lombok.RequiredArgsConstructor;
 public class ScheduleService {
 	private final ScheduleRepository scheduleRepository;
 
-
-	public List<ScheduleCountResponseDTO> countScheduleOfEachDay(String memberId, LocalDate startDate, LocalDate endDate) {
+	public List<ScheduleCountResponseDTO> countScheduleOfEachDay(String memberId, LocalDate startDate,
+		LocalDate endDate) {
 		List<Schedule> schedules = scheduleRepository.findAllByDateRangeAndMemberId(
 			LocalDateTime.of(startDate, LocalTime.MIN),
 			LocalDateTime.of(endDate, LocalTime.MIN).plusDays(1),
@@ -64,11 +59,11 @@ public class ScheduleService {
 	public Long saveSchedule(String memberId, ScheduleCreateDTO dto) {
 
 		Schedule schedule = new Schedule(
-				memberId,
-				dto.getTitle(),
-				DateTimeUtil.getStartLocalDateTime(dto.getStartDate(), dto.getStartTime()),
-				DateTimeUtil.getEndLocalDateTime(dto.getEndDate(), dto.getEndTime()),
-				dto.getPlace()
+			memberId,
+			dto.getTitle(),
+			DateTimeUtil.getStartLocalDateTime(dto.getStartDate(), dto.getStartTime()),
+			DateTimeUtil.getEndLocalDateTime(dto.getEndDate(), dto.getEndTime()),
+			dto.getPlace()
 		);
 
 		scheduleRepository.save(schedule);
@@ -91,17 +86,18 @@ public class ScheduleService {
 	@Transactional
 	public void updateSchedule(String memberId, Long scheduleId, ScheduleUpdateDTO dto) {
 		scheduleRepository.findByIdAndMemberId(scheduleId, memberId)
-				.ifPresent(schedule -> schedule.update(dto.getTitle(),
-                        DateTimeUtil.getStartLocalDateTime(dto.getStartDate(), dto.getStartTime()),
-                        DateTimeUtil.getEndLocalDateTime(dto.getEndDate(), dto.getEndTime()),
-                        dto.getPlace()));
+			.ifPresent(schedule -> schedule.update(dto.getTitle(),
+				DateTimeUtil.getStartLocalDateTime(dto.getStartDate(), dto.getStartTime()),
+				DateTimeUtil.getEndLocalDateTime(dto.getEndDate(), dto.getEndTime()),
+				dto.getPlace()));
 	}
 
-	public List<ScheduleInfoResponseDTO> searchAllByConditions(String memberId, LocalDate startDate, LocalDate endDate, String title, String place) {
+	public List<ScheduleInfoResponseDTO> searchAllByConditions(String memberId, LocalDateTime startDateTime,
+		LocalDateTime endDateTime, String title, String place) {
 		List<Schedule> schedules = scheduleRepository.searchAllByConditions(
 			memberId,
-			startDate,
-			endDate,
+			startDateTime,
+			endDateTime,
 			title,
 			place
 		);

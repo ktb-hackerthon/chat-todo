@@ -1,8 +1,6 @@
 package com.demo.chattodo.domain.repository;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
@@ -21,7 +19,8 @@ public class ScheduleRepositoryImpl implements ScheduleRepositoryCustom {
 
 	// 여러 조건들을 통해 일정 가져오기
 	@Override
-	public List<Schedule> searchAllByConditions(String memberId, LocalDate startDate, LocalDate endDate, String title,
+	public List<Schedule> searchAllByConditions(String memberId, LocalDateTime startDateTime, LocalDateTime endDateTime,
+		String title,
 		String place) {
 		QSchedule schedule = QSchedule.schedule;
 
@@ -31,14 +30,12 @@ public class ScheduleRepositoryImpl implements ScheduleRepositoryCustom {
 		builder.and(schedule.memberId.eq(memberId));
 
 		// 시작일시 조건
-		if (startDate != null) {
-			LocalDateTime startDateTime = LocalDateTime.of(startDate, LocalTime.MIN);
+		if (startDateTime != null) {
 			builder.and(schedule.startDateTime.goe(startDateTime));
 		}
 
 		// 종료일시 조건
-		if (endDate != null) {
-			LocalDateTime endDateTime = LocalDateTime.of(endDate, LocalTime.MAX);
+		if (endDateTime != null) {
 			builder.and(schedule.endDateTime.loe(endDateTime));
 		}
 

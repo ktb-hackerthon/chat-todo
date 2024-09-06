@@ -1,6 +1,8 @@
 package com.demo.chattodo.domain.controller;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
@@ -73,10 +75,30 @@ public class ScheduleController {
 	@GetMapping("/search")
 	public List<ScheduleInfoResponseDTO> searchAllByConditions(
 		@RequestHeader("member_id") String memberId,
-		@RequestParam(value = "start_date", required = false) LocalDate startDateTime,
-		@RequestParam(value = "end_date", required = false) LocalDate endDateTime,
+		@RequestParam(value = "start_date", required = false) LocalDate startDate,
+		@RequestParam(value = "start_time", required = false) LocalTime startTime,
+		@RequestParam(value = "end_date", required = false) LocalDate endDate,
+		@RequestParam(value = "end_time", required = false) LocalTime endTime,
 		@RequestParam(value = "title", required = false) String title,
 		@RequestParam(value = "place", required = false) String place) {
+
+		LocalDateTime startDateTime = null;
+
+		if (startDate != null) {
+			startDateTime = LocalDateTime.of(startDate, LocalTime.MIN);
+			if (startTime != null) {
+				startDateTime = LocalDateTime.of(startDate, startTime);
+			}
+		}
+
+		LocalDateTime endDateTime = null;
+		if (endDate != null) {
+			endDateTime = LocalDateTime.of(endDate, LocalTime.MAX);
+			if (endTime != null) {
+				endDateTime = LocalDateTime.of(endDate, endTime);
+			}
+		}
+
 		return scheduleService.searchAllByConditions(memberId, startDateTime, endDateTime, title, place);
 	}
 }
