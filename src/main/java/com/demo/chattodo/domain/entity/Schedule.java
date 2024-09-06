@@ -34,7 +34,12 @@ public class Schedule {
 		this.startDateTime = startDateTime;
 		this.endDateTime = endDateTime;
 		this.place = place;
-		this.reminderDateTime = reminderDateTime;
+
+		if (reminderDateTime == null) {
+			this.reminderDateTime = startDateTime.minusMinutes(15);
+		} else {
+			this.reminderDateTime = reminderDateTime;
+		}
 	}
 
 	public void update(String title, LocalDateTime startDateTime, LocalDateTime endDateTime, String place, LocalDateTime remainderDateTime) {
@@ -42,7 +47,12 @@ public class Schedule {
 		this.startDateTime = startDateTime;
 		this.endDateTime = endDateTime;
 		this.place = place;
-		this.reminderDateTime = remainderDateTime;
+
+		if (reminderDateTime == null) {
+			this.reminderDateTime = startDateTime.minusMinutes(15);
+		} else {
+			this.reminderDateTime = reminderDateTime;
+		}
 	}
 
 	public String getReminderMessage() {
