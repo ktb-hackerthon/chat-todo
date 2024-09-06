@@ -29,11 +29,7 @@ public class ScheduleService {
 
 	public List<ScheduleCountResponseDTO> countScheduleOfEachDay(String memberId, LocalDateTime startDateTime,
 		LocalDateTime endDateTime) {
-		List<Schedule> schedules = scheduleRepository.findAllByDateRangeAndMemberId(
-			startDateTime,
-			endDateTime,
-			memberId
-		);
+		List<Schedule> schedules = scheduleRepository.findAllByMemberId(memberId);
 
 		Map<LocalDate, Long> countMap = new HashMap<>();
 		for (Schedule schedule : schedules) {
@@ -41,7 +37,11 @@ public class ScheduleService {
 			LocalDate endDate = schedule.getEndDateTime().toLocalDate();
 
 			for (LocalDate date = startDate; date.isBefore(endDate) || date.isEqual(endDate); date = date.plusDays(1)) {
-				countMap.put(date, countMap.getOrDefault(date, 0L) + 1L);
+				if (date.isAfter(endDateTime.toLocalDate()) || date.isBefore(startDateTime.toLocalDate())) {
+					continue;
+				}
+
+				countMap.put(date, countMap.getOrDefault(date, 0L) + 1);
 			}
 		}
 
