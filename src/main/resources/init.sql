@@ -43,3 +43,26 @@ VALUES
     (28, 'a1b2c3d4-e5f6-7890-g1h2-i3j4k5l6m7n8', 'Product Launch', '2024-09-10 09:17:55', '2024-09-10 10:29:18', 'Main Hall'),
     (29, 'b1c2d3e4-f5g6-7890-h1i2-j3k4l5m6n7o8', 'Team Outing', '2024-09-06 15:43:27', '2024-09-06 17:12:58', 'Outdoor Garden'),
     (30, 'c1d2e3f4-g5h6-7890-i1j2-k3l4m5n6o7p8', 'Training Workshop', '2024-09-08 10:50:31', '2024-09-08 12:39:42', 'Training Room');
+
+-- 시작 시간이 00:00:00인 경우 (3개)
+INSERT INTO schedule (id, member_id, title, start_date_time, end_date_time, place)
+VALUES
+    (31, 'a1b2c3d4-e5f6-7890-g1h2-i3j4k5l6m7n8', 'Early Morning Meeting', '2024-09-15 00:00:00', '2024-09-15 10:30:00', 'Conference Room A'),
+    (32, 'a1b2c3d4-e5f6-7890-g1h2-i3j4k5l6m7n8', 'Day-long Workshop', '2024-09-20 00:00:00', '2024-09-20 18:00:00', 'Training Center'),
+    (33, 'a1b2c3d4-e5f6-7890-g1h2-i3j4k5l6m7n8', 'Overnight Project Kickoff', '2024-09-25 00:00:00', '2024-09-26 08:00:00', 'Main Office');
+
+-- 종료 시간이 23:59:59인 경우 (3개)
+INSERT INTO schedule (id, member_id, title, start_date_time, end_date_time, place)
+VALUES
+    (34, 'a1b2c3d4-e5f6-7890-g1h2-i3j4k5l6m7n8', 'Late Night Coding Session', '2024-09-18 20:00:00', '2024-09-18 23:59:59', 'Development Lab'),
+    (35, 'a1b2c3d4-e5f6-7890-g1h2-i3j4k5l6m7n8', 'End-of-Month Review', '2024-09-30 14:00:00', '2024-09-30 23:59:59', 'Board Room'),
+    (36, 'a1b2c3d4-e5f6-7890-g1h2-i3j4k5l6m7n8', 'International Conference Call', '2024-09-22 22:00:00', '2024-09-22 23:59:59', 'Virtual Meeting Room');
+
+-- 9월 1일부터 30일 중 랜덤으로 5개의 일정 추가
+INSERT INTO schedule (id, member_id, title, start_date_time, end_date_time, place)
+VALUES
+    (37, 'a1b2c3d4-e5f6-7890-g1h2-i3j4k5l6m7n8', 'Quarterly Planning', '2024-09-03 09:30:00', '2024-09-03 12:30:00', 'Strategy Room'),
+    (38, 'a1b2c3d4-e5f6-7890-g1h2-i3j4k5l6m7n8', 'Client Lunch Meeting', '2024-09-17 12:00:00', '2024-09-17 14:00:00', 'Fancy Restaurant'),
+    (39, 'a1b2c3d4-e5f6-7890-g1h2-i3j4k5l6m7n8', 'Team Building Exercise', '2024-09-24 14:00:00', '2024-09-24 17:00:00', 'City Park'),
+    (40, 'a1b2c3d4-e5f6-7890-g1h2-i3j4k5l6m7n8', 'Product Development Review', '2024-09-11 10:00:00', '2024-09-11 11:30:00', 'Innovation Lab'),
+    (41, 'a1b2c3d4-e5f6-7890-g1h2-i3j4k5l6m7n8', 'Annual Performance Evaluation', '2024-09-29 13:00:00', '2024-09-29 16:00:00', 'HR Office');
