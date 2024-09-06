@@ -28,4 +28,7 @@ public class ScheduleCreateDTO {
 
     String place;
 
+    @JsonProperty("reminder_time")
+    LocalTime reminderTime;
+
 }

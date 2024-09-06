@@ -57,13 +57,16 @@ public class ScheduleService {
 
 	@Transactional
 	public Long saveSchedule(String memberId, ScheduleCreateDTO dto) {
+		LocalDateTime startLocalDateTime = DateTimeUtil.getStartLocalDateTime(dto.getStartDate(), dto.getStartTime());
+		LocalDateTime endLocalDateTime = DateTimeUtil.getEndLocalDateTime(dto.getEndDate(), dto.getEndTime());
 
 		Schedule schedule = new Schedule(
-			memberId,
-			dto.getTitle(),
-			DateTimeUtil.getStartLocalDateTime(dto.getStartDate(), dto.getStartTime()),
-			DateTimeUtil.getEndLocalDateTime(dto.getEndDate(), dto.getEndTime()),
-			dto.getPlace()
+				memberId,
+				dto.getTitle(),
+				startLocalDateTime,
+				endLocalDateTime,
+				dto.getPlace(),
+				getRemainderLocalDateTime(startLocalDateTime, dto.getReminderTime())
 		);
 
 		scheduleRepository.save(schedule);
@@ -85,11 +88,17 @@ public class ScheduleService {
 
 	@Transactional
 	public void updateSchedule(String memberId, Long scheduleId, ScheduleUpdateDTO dto) {
+		LocalDateTime startLocalDateTime = DateTimeUtil.getStartLocalDateTime(dto.getStartDate(), dto.getStartTime());
+		LocalDateTime endLocalDateTime = DateTimeUtil.getEndLocalDateTime(dto.getEndDate(), dto.getEndTime());
+
 		scheduleRepository.findByIdAndMemberId(scheduleId, memberId)
-			.ifPresent(schedule -> schedule.update(dto.getTitle(),
-				DateTimeUtil.getStartLocalDateTime(dto.getStartDate(), dto.getStartTime()),
-				DateTimeUtil.getEndLocalDateTime(dto.getEndDate(), dto.getEndTime()),
-				dto.getPlace()));
+				.ifPresent(schedule -> schedule.update(
+						dto.getTitle(),
+						startLocalDateTime,
+						endLocalDateTime,
+						dto.getPlace(),
+						getRemainderLocalDateTime(startLocalDateTime, dto.getReminderTime())));
+
 	}
 
 	public List<ScheduleInfoResponseDTO> searchAllByConditions(String memberId, LocalDateTime startDateTime,
@@ -115,5 +124,17 @@ public class ScheduleService {
 
 		return response;
 	}
+
+	private LocalDateTime getRemainderLocalDateTime(LocalDateTime startDateTime, LocalTime remainderTime) {
+		if (remainderTime == null) {
+			return null;
+		}
+
+		return startDateTime.minusHours(remainderTime.getHour())
+				.minusMinutes(remainderTime.getMinute())
+				.minusSeconds(remainderTime.getSecond());
+	}
+
+
 
 }
