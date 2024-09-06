@@ -16,4 +16,10 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long>, Sched
 	List<Schedule> findAllByDateRangeAndMemberId(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate, @Param("memberId") String memberId);
 
 	Optional<Schedule> findByIdAndMemberId(Long id, String memberId);
+
+	@Query("SELECT s FROM Schedule s WHERE s.memberId = :memberId AND s.reminderDateTime BETWEEN :searchStartDateTime AND :searchEndDateTime")
+	List<Schedule> findRemindersWithinTimeRangeByMemberId(
+			@Param("memberId") String memberId,
+			@Param("searchStartDateTime") LocalDateTime searchStartDateTime,
+			@Param("searchEndDateTime") LocalDateTime searchEndDateTime);
 }
