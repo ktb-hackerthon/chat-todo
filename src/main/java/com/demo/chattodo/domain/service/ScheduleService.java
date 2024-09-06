@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.demo.chattodo.domain.dto.request.ScheduleCreateDTO;
 import com.demo.chattodo.domain.dto.request.ScheduleUpdateDTO;
 import com.demo.chattodo.domain.dto.response.ScheduleCountResponseDTO;
+import com.demo.chattodo.domain.dto.response.ScheduleInfoResponseDTO;
 import com.demo.chattodo.domain.entity.Schedule;
 import com.demo.chattodo.domain.repository.ScheduleRepository;
 import com.demo.chattodo.domain.utils.DateTimeUtil;
@@ -52,6 +53,7 @@ public class ScheduleService {
 			.forEach(entry -> response.add(new ScheduleCountResponseDTO(entry.getKey(), entry.getValue())));
 
 		return response;
+
 	}
 
 	@Transactional
@@ -90,4 +92,29 @@ public class ScheduleService {
 				DateTimeUtil.getEndLocalDateTime(dto.getEndDate(), dto.getEndTime()),
 				dto.getPlace()));
 	}
+
+	public List<ScheduleInfoResponseDTO> searchAllByConditions(String memberId, LocalDateTime startDateTime,
+		LocalDateTime endDateTime, String title, String place) {
+		List<Schedule> schedules = scheduleRepository.searchAllByConditions(
+			memberId,
+			startDateTime,
+			endDateTime,
+			title,
+			place
+		);
+
+		List<ScheduleInfoResponseDTO> response = new ArrayList<>();
+		for (Schedule schedule : schedules) {
+			response.add(ScheduleInfoResponseDTO.builder()
+				.id(schedule.getId())
+				.title(schedule.getTitle())
+				.startDateTime(schedule.getStartDateTime())
+				.endDateTime(schedule.getEndDateTime())
+				.place(schedule.getPlace())
+				.build());
+		}
+
+		return response;
+	}
+
 }

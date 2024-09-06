@@ -1,6 +1,7 @@
 package com.demo.chattodo.domain.controller;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.demo.chattodo.domain.dto.request.ScheduleCreateDTO;
 import com.demo.chattodo.domain.dto.request.ScheduleUpdateDTO;
 import com.demo.chattodo.domain.dto.response.ScheduleCountResponseDTO;
+import com.demo.chattodo.domain.dto.response.ScheduleInfoResponseDTO;
 import com.demo.chattodo.domain.service.ScheduleService;
 
 import lombok.RequiredArgsConstructor;
@@ -54,14 +56,6 @@ public class ScheduleController {
 		);
 	}
 
-	@PostMapping
-	public ResponseEntity<?> createSchedule(
-		@RequestHeader("member_id") String memberId,
-		@RequestBody ScheduleCreateDTO dto) {
-
-		return ResponseEntity.ok().body(scheduleService.saveSchedule(memberId, dto));
-	}
-
 	@DeleteMapping("/{scheduleId}")
 	public ResponseEntity<?> deleteSchedule(
 		@RequestHeader("member_id") String memberId,
@@ -82,5 +76,43 @@ public class ScheduleController {
 
 		scheduleService.updateSchedule(memberId, scheduleId, dto);
 		return ResponseEntity.ok().build();
+	}
+
+	@PostMapping
+	public ResponseEntity<?> createSchedule(
+		@RequestHeader("member_id") String memberId,
+		@RequestBody ScheduleCreateDTO dto) {
+
+		return ResponseEntity.ok().body(scheduleService.saveSchedule(memberId, dto));
+	}
+
+	@GetMapping("/search")
+	public List<ScheduleInfoResponseDTO> searchAllByConditions(
+		@RequestHeader("member_id") String memberId,
+		@RequestParam(value = "start_date", required = false) LocalDate startDate,
+		@RequestParam(value = "start_time", required = false) LocalTime startTime,
+		@RequestParam(value = "end_date", required = false) LocalDate endDate,
+		@RequestParam(value = "end_time", required = false) LocalTime endTime,
+		@RequestParam(value = "title", required = false) String title,
+		@RequestParam(value = "place", required = false) String place) {
+
+		LocalDateTime startDateTime = null;
+
+		if (startDate != null) {
+			startDateTime = LocalDateTime.of(startDate, LocalTime.MIN);
+			if (startTime != null) {
+				startDateTime = LocalDateTime.of(startDate, startTime);
+			}
+		}
+
+		LocalDateTime endDateTime = null;
+		if (endDate != null) {
+			endDateTime = LocalDateTime.of(endDate, LocalTime.MAX);
+			if (endTime != null) {
+				endDateTime = LocalDateTime.of(endDate, endTime);
+			}
+		}
+
+		return scheduleService.searchAllByConditions(memberId, startDateTime, endDateTime, title, place);
 	}
 }
